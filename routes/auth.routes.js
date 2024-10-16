@@ -5,14 +5,15 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 
 // const verifyToken = require('../middlewares/auth.middlewares')
-const {verifyToken, verifyAdmin} = require("../middlewares/auth.middlewares")
+const { verifyToken, verifyAdmin } = require("../middlewares/auth.middlewares")
 
 
 // | POST        | `/api/auth/signup`      | Register a new user and encrypt the password, create user in db     |
 router.post("/signup", async (req, res, next) => {
 
   // console.log(req.body)
-  const { email, password, username } = req.body
+  // const { email, password, username } = req.body
+  const { email, password, username, role } = req.body
 
   // back-end validations start here
 
@@ -43,7 +44,9 @@ router.post("/signup", async (req, res, next) => {
     await User.create({
       email,
       password: hashPassword,
-      username
+      username,
+      // role: "user"
+      role
     })
 
     res.sendStatus(201)
@@ -61,31 +64,32 @@ router.post("/login", async (req, res, next) => {
 
   // checks all required fields have info
   if (!email || !password) {
-    res.status(400).json({message: "all fields are require"})
+    res.status(400).json({ message: "all fields are require" })
     return 
   }
 
   try {
     
     // validate user in database
-    const foundUser = await User.findOne({email: email})
+    const foundUser = await User.findOne({ email: email })
     // console.log(foundUser)
     if (!foundUser) {
-      res.status(400).json({message: "no user found with this email"})
+      res.status(400).json({ message: "no user found with this email" })
       return 
     }
 
     // validate password
-    const isPasswordCorrect = await bcrypt.compare(password, foundUser.password )
+    const isPasswordCorrect = await bcrypt.compare( password, foundUser.password )
     if (!isPasswordCorrect) {
-      res.status(400).json({message: "wrong password"})
+      res.status(400).json({ message: "wrong password" })
       return 
     }
 
     // send virtual key to authenticated user
     const payload = {
       _id: foundUser._id,
-      email: foundUser.email
+      email: foundUser.email,
+      role: foundUser.role
 
       // ADD HERE EVERY PROPERTY THAT IDENTIFIES THE USER AND/OR PROVIDES SUPERPOWERS !!!
     }
@@ -122,7 +126,7 @@ router.get("/verify", verifyToken, (req, res) => {
 
 // ADMIN route example -- all private calls have to use verifyToken
 router.get("/user/admin", verifyToken, verifyAdmin, (req, res) => {
-  res.json({message: "esta es tu data de admin"})
+  res.json({ message: "who looks like an admin?" })
 })
 
 
