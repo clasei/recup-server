@@ -1,0 +1,22 @@
+# Dependencies Directories
+node_modules/
+
+# Debug log from npm
+npm-debug.log
+
+# Environment Variables
+.env
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+*.lnk
+
+# VS Code
+.vscode/*
