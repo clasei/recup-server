@@ -13,7 +13,7 @@ router.post("/", async (req, res, next) => {
       savedRecs: [] // empty for new users
     })
     res.status(201).json(newUser)
-    console.log(newUser)
+    // console.log(newUser)
   } catch (error) {
     next(error)
   }
