@@ -4,7 +4,8 @@ const User = require("../models/user.model") // user model is (clearly) involved
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 
-const verifyToken = require('../middlewares/auth.middlewares')
+// const verifyToken = require('../middlewares/auth.middlewares')
+const {verifyToken, verifyAdmin} = require("../middlewares/auth.middlewares")
 
 
 // | POST        | `/api/auth/signup`      | Register a new user and encrypt the password, create user in db     |
@@ -112,6 +113,17 @@ router.get("/verify", verifyToken, (req, res) => {
 
 })
 
+
+// // comes from class example !!!
+// // private call example using verifyToken
+// router.get("/user/perfil", verifyToken, (req, res) => {
+//   res.json({message: "aqui tienes tu información privada"})
+// })
+
+// ADMIN route example -- all private calls have to use verifyToken
+router.get("/user/admin", verifyToken, verifyAdmin, (req, res) => {
+  res.json({message: "esta es tu data de admin"})
+})
 
 
 module.exports = router

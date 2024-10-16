@@ -25,7 +25,8 @@ const userSchema = new Schema(
     savedRecs: [{ type: Schema.Types.ObjectId, ref: "Recommendation" }],
     role: {
       type: String,
-      enum: ["user", "admin", "superadmin"],
+      // enum: ["user", "admin", "superadmin"],
+      enum: ["user", "admin"],
       default: "user"
     }
   },

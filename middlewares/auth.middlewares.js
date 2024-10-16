@@ -22,4 +22,18 @@ function verifyToken (req, res, next) {
   }
 }
 
-module.exports = verifyToken
+
+function verifyAdmin(req, res, next) {
+
+  if (req.payload.role === "admin") {
+    next()
+  } else {
+    res.status(401).json({message: "you don't look like an admin"})
+  }
+
+}
+
+module.exports = {
+  verifyToken,
+  verifyAdmin
+}
