@@ -12,7 +12,7 @@ router.post("/", async (req, res, next) => {
       recText: req.body.recText
     })
     res.status(201).json(newRec)
-    console.log(newRec)
+    // console.log(newRec)
   } catch (error) {
     next(error)
   }
