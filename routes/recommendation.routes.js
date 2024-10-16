@@ -33,6 +33,8 @@ router.get("/", async (req, res, next) => {
 router.get("/:recommendationId", async (req, res, next) => {
   try {
     const specificRec = await Recommendation.findById(req.params.recommendationId)
+    .populate("contentId") // populates content info
+    .populate("creatorId") // populates rec-creator info
     res.status(200).json(specificRec)
   } catch (error) {
     next(error)
@@ -54,6 +56,7 @@ router.get("/content/:contentId", async (req, res, next) => {
   try {
     const allRecsByContent = await Recommendation.find({ contentId: req.params.contentId })
       .populate("contentId") // populates content info
+      .populate("creatorId") // populates rec-creator info
     res.status(200).json(allRecsByContent);
   } catch (error) {
     next(error)

@@ -21,12 +21,21 @@ router.post("/", async (req, res, next) => {
 
 
 // | GET         | `/api/users/:userId`    | Read a specific user's profile                     |
+// router.get("/:userId", async (req, res, next) => {
+//   try {
+//     const specificUser = await User.findById(req.params.userId)
+//     res.status(200).json(specificUser)
+//   } catch (error) {
+//     next(error)
+//   }
+// })
 router.get("/:userId", async (req, res, next) => {
   try {
     const specificUser = await User.findById(req.params.userId)
-    res.status(200).json(specificUser)
+      .populate("savedRecs") // populates recommendations data when fetching the user
+    res.status(200).json(specificUser);
   } catch (error) {
-    next(error)
+    next(error);
   }
 })
 
