@@ -66,7 +66,6 @@ router.put("/:contentId", async (req, res, next) => {
 })
 
 
-
 // | DELETE      | `/api/contents/:contentId` | Delete specific content  
 router.delete("/:contentId", async (req, res, next) => {
   try {
@@ -76,6 +75,7 @@ router.delete("/:contentId", async (req, res, next) => {
     next(error)
   }
 })
+
 
 
 module.exports = router

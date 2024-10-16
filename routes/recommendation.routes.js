@@ -40,11 +40,21 @@ router.get("/:recommendationId", async (req, res, next) => {
 })
 
 
-// | GET         | `/api/recommendations/:contentId`        | Read all recommendations for a specific content |
-router.get("/", async (req, res, next) => {
+// | GET         | `/api/recommendations/content/:contentId`        | Read all recommendations for a specific content |
+// router.get("/content/:contentId", async (req, res, next) => {
+//   try {
+//     const allRecsByContent = await Recommendation.find({ contentId: req.params.contentId })
+//     res.status(200).json(allRecsByContent)
+//   } catch (error) {
+//     next(error)
+//   }
+// })
+// ===
+router.get("/content/:contentId", async (req, res, next) => {
   try {
     const allRecsByContent = await Recommendation.find({ contentId: req.params.contentId })
-    res.status(200).json(allRecsByContent)
+      .populate("contentId") // populates content info
+    res.status(200).json(allRecsByContent);
   } catch (error) {
     next(error)
   }
