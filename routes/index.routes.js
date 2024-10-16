@@ -6,16 +6,16 @@ const router = require("express").Router()
 // const authRoutes = require("./auth.routes")
 const contentRoutes = require("./content.routes")
 const recommendationRoutes = require("./recommendation.routes")
-// const userRoutes = require("./user.routes")
+const userRoutes = require("./user.routes")
 
 // // plural -> convention !!!
 // router.use("/auth", authRoutes)
 router.use("/contents", contentRoutes)
 router.use("/recommendations", recommendationRoutes)
-// router.use("/users", userRoutes)
+router.use("/users", userRoutes)
 
 
-// // TEST
+// // TEST -- all good
 // router.get("/", (req, res, next) => {
 //   res.json(`hey there this is still rec-up-back-end`)
 // })
