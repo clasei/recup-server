@@ -1,10 +1,10 @@
 require("dotenv").config()
-// require("./db") // waiting for database
+require("./db") // waiting for database
 
 const express = require("express")
 const app = express()
 
-// require("./config")(app) // waiting for config
+require("./config")(app) // waiting for config
 
 const indexRoutes = require("./routes/index.routes")
 app.use("/api", indexRoutes)
