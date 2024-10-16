@@ -13,7 +13,7 @@ router.post("/", async (req, res, next) => {
       mediaUrl: req.body.mediaUrl
     })
     res.status(201).json(newContent)
-    console.log(newContent)
+    // console.log(newContent)
   } catch (error) {
     next(error)
     // // check this syntax after error-handling setup !!!
@@ -47,7 +47,7 @@ router.get("/:contentId", async (req, res, next) => {
 // | PUT         | `/api/contents/:contentId` | Update specific content                  |
 router.put("/:contentId", async (req, res, next) => {
   try {
-    const updatedContent = Content.findByIdAndUpdate(
+    const updatedContent = await Content.findByIdAndUpdate(
       req.params.contentId,
       {
         category: req.body.category,
@@ -57,8 +57,9 @@ router.put("/:contentId", async (req, res, next) => {
         mediaUrl: req.body.mediaUrl
         // add more fields if you change the model !!!
       },
-      { new: true}
+      { new: true }
     )
+      res.status(200).json(updatedContent)
   } catch (error) {
     next(error)
   }
@@ -75,7 +76,6 @@ router.delete("/:contentId", async (req, res, next) => {
     next(error)
   }
 })
-
 
 
 module.exports = router

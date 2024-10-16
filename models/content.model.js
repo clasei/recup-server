@@ -21,7 +21,7 @@ const contentSchema = new mongoose.Schema({
   author: { type: String, required: true },
   keywords: [String],
   mediaUrl: String
-  // totalRecommendations to be added -- virtual ?
+  // totalRecommendations // to be added -- virtual ?
 })
 
 const Content = mongoose.model("Content", contentSchema)
