@@ -34,8 +34,6 @@ function verifyAdmin(req, res, next) {
 }
 
 
-console.log('you look like an admin...')
-
 
 module.exports = {
   verifyToken,
