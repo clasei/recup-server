@@ -6,6 +6,9 @@ const recommendationSchema = new mongoose.Schema({
   tagline: { type: String, required: true },
   recText: { type: String, required: true },
   totalSaved: { type: Number, default: 0 }
+},
+{
+  timestamps: true
 })
 
 const Recommendation = mongoose.model("Recommendation", recommendationSchema)

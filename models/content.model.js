@@ -23,7 +23,11 @@ const contentSchema = new mongoose.Schema({
   author: { type: String, required: true },
   keywords: [String],
   mediaUrl: String,
-  totalRecommendations: { type: Number, default: 0 }
+  totalRecommendations: { type: Number, default: 0 },
+  firstRecommendationCreator:  { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
+},
+{
+  timestamps: true
 })
 
 const Content = mongoose.model("Content", contentSchema)
