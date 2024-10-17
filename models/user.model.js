@@ -6,6 +6,13 @@ const { Schema, model } = require("mongoose");
 
 const userSchema = new Schema(
   {
+    role: {
+      type: String,
+      // enum: ["user", "admin", "superadmin"],
+      enum: ["user", "admin"]
+      // default: "user" // add when done testing !!!
+      // required: true // ??
+    },
     email: {
       type: String,
       required: [true, 'hey, your email is required'],
@@ -21,19 +28,14 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'remember to add your username']
     },
-    socialLinks: [String],
+    // socialLinks: [String], // check if more social is needed... probably not
+    socialLink: { type: String, trim: true },
     savedRecs: [{ type: Schema.Types.ObjectId, ref: "Recommendation" }],
-    role: {
-      type: String,
-      // enum: ["user", "admin", "superadmin"],
-      enum: ["user", "admin"]
-      // default: "user"
-    }
   },
   {
     timestamps: true // automatically adds createdAt + updatedAt timestamps
   }
-);
+)
 
 const User = model("User", userSchema)
 

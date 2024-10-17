@@ -43,15 +43,6 @@ router.get("/:recommendationId", async (req, res, next) => {
 
 
 // | GET         | `/api/recommendations/content/:contentId`        | Read all recommendations for a specific content |
-// router.get("/content/:contentId", async (req, res, next) => {
-//   try {
-//     const allRecsByContent = await Recommendation.find({ content: req.params.contentId })
-//     res.status(200).json(allRecsByContent)
-//   } catch (error) {
-//     next(error)
-//   }
-// })
-// ===
 router.get("/content/:contentId", async (req, res, next) => {
   try {
     const allRecsByContent = await Recommendation.find({ content: req.params.contentId })
@@ -85,48 +76,52 @@ router.put("/:recommendationId", async (req, res, next) => {
 })
 
 
-// | PUT         | `/api/recommendations/:recommendationId/saved` | Increment totalSaved by 1               |
-router.put("/:recommendationId/saved", async (req, res, next) => {
-  try {
+// // MOVED TO user.model and integrated in route to add the rec to the savedRecs array haha
 
-    const increaseTotalSaved = await Recommendation.findByIdAndUpdate(
-      req.params.recommendationId,
-      {
-        // $inc added to increment the property (mongodb operator)
-        $inc: { totalSaved: 1 }
-      },
-      { new: true }
-    )
-    res.status(200).json({ increaseTotalSaved, message: "total saved +1" });
-  } catch (error) {
-    next(error);
-  }
-})
+// // | PUT         | `/api/recommendations/:recommendationId/saved` | Increment totalSaved by 1               |
+// router.put("/:recommendationId/saved", async (req, res, next) => {
+//   try {
+
+//     const increaseTotalSaved = await Recommendation.findByIdAndUpdate(
+//       req.params.recommendationId,
+//       {
+//         // $inc added to increment the property (mongodb operator)
+//         $inc: { totalSaved: 1 }
+//       },
+//       { new: true }
+//     )
+//     res.status(200).json({ increaseTotalSaved, message: "total saved +1" });
+//   } catch (error) {
+//     next(error);
+//   }
+// })
 
 
-// | PUT         | `/api/recommendations/:recommendationId/unsaved` | Decrease totalSaved by 1               |
-router.put("/:recommendationId/unsaved", async (req, res, next) => {
-  try {
+// // | PUT         | `/api/recommendations/:recommendationId/unsaved` | Decrease totalSaved by 1               |
+// router.put("/:recommendationId/unsaved", async (req, res, next) => {
+//   try {
 
-    const recommendation = await Recommendation.findById(req.params.recommendationId);
-    // guard clause added to avoid going below zero
-    if (recommendation.totalSaved > 0) {
-      const decreaseTotalSaved = await Recommendation.findByIdAndUpdate(
-        req.params.recommendationId,
-        {
-          $inc: { totalSaved: -1 }
-        },
-        { new: true }
-      )
-      res.status(200).json({ decreaseTotalSaved, message: "total saved -1" });
-    } else {
-      res.status(400).json({ message: "totalSaved cannot go below zero haha" });
-    }
+//     const recommendation = await Recommendation.findById(req.params.recommendationId);
+//     // guard clause added to avoid going below zero
+//     if (recommendation.totalSaved > 0) {
+//       const decreaseTotalSaved = await Recommendation.findByIdAndUpdate(
+//         req.params.recommendationId,
+//         {
+//           $inc: { totalSaved: -1 }
+//         },
+//         { new: true }
+//       )
+//       res.status(200).json({ decreaseTotalSaved, message: "total saved -1" });
+//     } else {
+//       res.status(400).json({ message: "totalSaved cannot go below zero haha" });
+//     }
 
-  } catch (error) {
-    next(error);
-  }
-})
+//   } catch (error) {
+//     next(error);
+//   }
+// })
+
+// // MOVED TO user.model and integrated in route to add the rec to the savedRecs array haha
 
 
 // | DELETE      | `/api/recommendations/:recommendationId` | Delete a specific recommendation                |
