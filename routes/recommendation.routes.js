@@ -6,8 +6,8 @@ const Recommendation = require("../models/recommendation.model")
 router.post("/", async (req, res, next) => {
   try {
     const newRec = await Recommendation.create({
-      contentId: req.body.contentId,
-      creatorId: req.body.creatorId,
+      content: req.body.content,
+      creator: req.body.creator,
       tagline: req.body.tagline,
       recText: req.body.recText
     })
@@ -33,8 +33,8 @@ router.get("/", async (req, res, next) => {
 router.get("/:recommendationId", async (req, res, next) => {
   try {
     const specificRec = await Recommendation.findById(req.params.recommendationId)
-    .populate("contentId") // populates content info
-    .populate("creatorId") // populates rec-creator info
+    .populate("content") // populates content info -> adapt later as needed... e.g. content.title
+    .populate("creator") // populates rec-creator -> adapt later as needed... e.g. info creator.username
     res.status(200).json(specificRec)
   } catch (error) {
     next(error)
@@ -45,7 +45,7 @@ router.get("/:recommendationId", async (req, res, next) => {
 // | GET         | `/api/recommendations/content/:contentId`        | Read all recommendations for a specific content |
 // router.get("/content/:contentId", async (req, res, next) => {
 //   try {
-//     const allRecsByContent = await Recommendation.find({ contentId: req.params.contentId })
+//     const allRecsByContent = await Recommendation.find({ content: req.params.contentId })
 //     res.status(200).json(allRecsByContent)
 //   } catch (error) {
 //     next(error)
@@ -54,9 +54,9 @@ router.get("/:recommendationId", async (req, res, next) => {
 // ===
 router.get("/content/:contentId", async (req, res, next) => {
   try {
-    const allRecsByContent = await Recommendation.find({ contentId: req.params.contentId })
-      .populate("contentId") // populates content info
-      .populate("creatorId") // populates rec-creator info
+    const allRecsByContent = await Recommendation.find({ content: req.params.contentId })
+      .populate("content") // populates content info
+      .populate("creator") // populates rec-creator info
     res.status(200).json(allRecsByContent);
   } catch (error) {
     next(error)
@@ -70,8 +70,8 @@ router.put("/:recommendationId", async (req, res, next) => {
     const updatedRec = await Recommendation.findByIdAndUpdate(
       req.params.recommendationId,
       {
-        contentId: req.body.contentId,
-        creatorId: req.body.creatorId,
+        content: req.body.content,
+        creator: req.body.creator,
         tagline: req.body.tagline,
         recText: req.body.recText
         // add more fields if you change the model !!!
