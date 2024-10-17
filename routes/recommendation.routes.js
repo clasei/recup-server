@@ -14,12 +14,12 @@ router.post("/", async (req, res, next) => {
       recText: req.body.recText
     })
 
-    // increment +1 totalRecommendations in content.model
+    // increment +1 totalRecommendations in content
     await Content.findByIdAndUpdate(req.body.content, {
       $inc: { totalRecommendations: 1 }
     })
 
-    res.status(201).json(newRec)
+    res.status(201).json({ newRec, message: "recommendation added, totalRecommendations updated" })
     // console.log(newRec)
   } catch (error) {
     next(error)
@@ -133,20 +133,41 @@ router.put("/:recommendationId", async (req, res, next) => {
 
 
 // | DELETE      | `/api/recommendations/:recommendationId` | Delete a specific recommendation                |
+// router.delete("/:recommendationId", async (req, res, next) => {
+//   try {
+
+//     await Recommendation.findByIdAndDelete(req.params.recommendationId)
+
+//     // decrement -1 totalRecommendations in the Content model
+//     await Content.findByIdAndUpdate(req.body.content, {
+//       $inc: { totalRecommendations: -1 }
+//     })
+
+//     res.sendStatus(204)
+//   } catch (error) {
+//     next(error)
+//   }
+// })
+
 router.delete("/:recommendationId", async (req, res, next) => {
   try {
-    await Recommendation.findByIdAndDelete(req.params.recommendationId)
 
-    // decrement totalRecommendations -1 in content.model
+    const recommendation = await Recommendation.findById(req.params.recommendationId);
+
+    // decrement totalRecommendations -1 in content
     await Content.findByIdAndUpdate(recommendation.content, {
       $inc: { totalRecommendations: -1 }
     })
 
-    res.sendStatus(204)
+    // delete recommendation after updating totalRecommendations
+    await Recommendation.findByIdAndDelete(req.params.recommendationId)
+
+    res.status(204).json({ message: "recommendation deleted, totalRecommendations updated" });
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
+
 
 
 
