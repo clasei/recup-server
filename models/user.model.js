@@ -31,6 +31,7 @@ const userSchema = new Schema(
     // socialLinks: [String], // check if more social is needed... probably not
     socialLink: { type: String, trim: true },
     savedRecs: [{ type: Schema.Types.ObjectId, ref: "Recommendation" }],
+    createdRecs: [{ type: Schema.Types.ObjectId, ref: "Recommendation" }]
   },
   {
     timestamps: true // automatically adds createdAt + updatedAt timestamps

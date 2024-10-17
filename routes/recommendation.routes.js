@@ -2,25 +2,31 @@ const router = require("express").Router()
 const Recommendation = require("../models/recommendation.model")
 // content.model added to update totalRecommendations
 const Content = require("../models/content.model")
+const User = require("../models/user.model")
 
 const { verifyToken } = require("../middlewares/auth.middlewares")
 
 
-// | POST        | `/api/recommendations`                   | Create a new recommendation                     |
-router.post("/", verifyToken, async (req, res, next) => {
+// | POST        | `/api/recommendations/content/:contentId`                   | Create a new recommendation for a existing content                     |
+router.post("/content/:contentId", verifyToken, async (req, res, next) => {
   try {
+
     const newRec = await Recommendation.create({
-      content: req.body.content,
+      content: req.params.contentId, // use front-end route !!!
       // use token to add creator
       creator: req.payload._id,
-      // creator: req.body.creator,
       tagline: req.body.tagline,
       recText: req.body.recText
     })
 
     // increment +1 totalRecommendations in content
-    await Content.findByIdAndUpdate(req.body.content, {
+    await Content.findByIdAndUpdate(req.params.contentId, {
       $inc: { totalRecommendations: 1 }
+    })
+
+    // add the new rec to the createdRecs user array property
+    await User.findByIdAndUpdate(req.payload._id, {
+      $push: { createdRecs: newRec._id }
     })
 
     res.status(201).json({ newRec, message: "recommendation added, totalRecommendations updated" })
@@ -29,6 +35,49 @@ router.post("/", verifyToken, async (req, res, next) => {
     next(error)
   }
 })
+
+// | POST | `/api/recommendations/new-content` | Create new content and a new recommendation |
+router.post("/new-content", verifyToken, async (req, res, next) => {
+  try {
+
+    // // check if content exists... integrate with the front in the future !!!
+    // const { category, title } = req.body;
+    // const existingContent = await Content.findOne({ category, title });
+
+    // if (existingContent) {
+    //   return res.status(400).json({ message: "this content already exists" });
+    // }
+
+    const newContent = await Content.create({
+      // category,
+      // title,
+      category: req.body.category,
+      title: req.body.title,
+      author: req.body.author,
+      keywords: req.body.keywords,
+      mediaUrl: req.body.mediaUrl,
+      firstRecommendationCreator: req.payload._id
+    })
+    
+    const newRec = await Recommendation.create({
+      content: newContent._id,
+      creator: req.payload._id,
+      tagline: req.body.tagline,
+      recText: req.body.recText
+    })
+
+    // add the new rec to the createdRecs user array property
+    await User.findByIdAndUpdate(req.payload._id, {
+      $push: { createdRecs: newRec._id }
+    })
+
+    res.status(201).json({ newRec, newContent, message: "new content and first recommendation created, life is beautiful, isnt it?" });
+  } catch (error) {
+    next(error);
+  }
+})
+
+
 
 // | GET         | `/api/recommendations`            | Read all recommendations                         |
 router.get("/", async (req, res, next) => {
@@ -58,8 +107,10 @@ router.get("/:recommendationId", async (req, res, next) => {
 router.get("/content/:contentId", async (req, res, next) => {
   try {
     const allRecsByContent = await Recommendation.find({ content: req.params.contentId })
-      .populate("content") // populates content info
-      .populate("creator") // populates rec-creator info
+      .populate("content") // populates content specific info
+      .populate("creator") // populates rec-creator specific info
+      // .populate("content", "title") // populates content specific info
+      // .populate("creator", "username") // populates rec-creator specific info
     res.status(200).json(allRecsByContent);
   } catch (error) {
     next(error)
@@ -68,13 +119,26 @@ router.get("/content/:contentId", async (req, res, next) => {
 
 
 // | PUT         | `/api/recommendations/:recommendationId` | Update a specific recommendation                |
-router.put("/:recommendationId", async (req, res, next) => {
+router.put("/:recommendationId", verifyToken, async (req, res, next) => {
   try {
+
+    const recommendation = await Recommendation.findById(req.params.recommendationId);
+
+    if (!recommendation) {
+      return res.status(404).json({ message: "recommendation not found" });
+    }
+
+    // check that the one who updates is the rec-creator
+    if (recommendation.creator.toString() !== req.payload._id) {
+      return res.status(403).json({ message: "you shouldn't be touching other people stuff, right?" });
+    }
+
+
     const updatedRec = await Recommendation.findByIdAndUpdate(
       req.params.recommendationId,
       {
-        content: req.body.content,
-        creator: req.body.creator,
+        // content: req.body.content,
+        // creator: req.body.creator, // no needed here
         tagline: req.body.tagline,
         recText: req.body.recText
         // add more fields if you change the model !!!
@@ -137,26 +201,15 @@ router.put("/:recommendationId", async (req, res, next) => {
 
 
 // | DELETE      | `/api/recommendations/:recommendationId` | Delete a specific recommendation                |
-// router.delete("/:recommendationId", async (req, res, next) => {
-//   try {
-
-//     await Recommendation.findByIdAndDelete(req.params.recommendationId)
-
-//     // decrement -1 totalRecommendations in the Content model
-//     await Content.findByIdAndUpdate(req.body.content, {
-//       $inc: { totalRecommendations: -1 }
-//     })
-
-//     res.sendStatus(204)
-//   } catch (error) {
-//     next(error)
-//   }
-// })
-
-router.delete("/:recommendationId", async (req, res, next) => {
+router.delete("/:recommendationId", verifyToken, async (req, res, next) => {
   try {
 
-    const recommendation = await Recommendation.findById(req.params.recommendationId);
+    const recommendation = await Recommendation.findById(req.params.recommendationId)
+
+    // checks if the creator is the user deleting; someone else == forbidden
+    if (recommendation.creator.toString() !== req.payload._id) {
+      return res.status(403).json({ message: "you cannot delete this, it's not yours" })
+    }
 
     // decrement totalRecommendations -1 in content
     await Content.findByIdAndUpdate(recommendation.content, {
@@ -166,12 +219,11 @@ router.delete("/:recommendationId", async (req, res, next) => {
     // delete recommendation after updating totalRecommendations
     await Recommendation.findByIdAndDelete(req.params.recommendationId)
 
-    res.status(204).json({ message: "recommendation deleted, totalRecommendations updated" });
+    res.status(204).json({ message: "recommendation deleted, totalRecommendations updated" })
   } catch (error) {
     next(error);
   }
-});
-
+})
 
 
 

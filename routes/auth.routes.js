@@ -28,7 +28,7 @@ router.post("/signup", async (req, res, next) => {
     return
   }
 
-  // ADD HERE AN EMAIL STRUCTURE VERIFICATION TO MAKE SURE THE EMAIL IS AN EMAIL !!! to be done
+  // email structure verification pending
   
   try {
 
@@ -45,8 +45,8 @@ router.post("/signup", async (req, res, next) => {
       email,
       password: hashPassword,
       username,
-      // role: "user"
-      role
+      role: "user"
+      // role
     })
 
     res.sendStatus(201)
@@ -81,7 +81,7 @@ router.post("/login", async (req, res, next) => {
     // validate password
     const isPasswordCorrect = await bcrypt.compare( password, foundUser.password )
     if (!isPasswordCorrect) {
-      res.status(400).json({ message: "wrong password" })
+      res.status(400).json({ message: "wrong credentials" })
       return 
     }
 
@@ -107,7 +107,6 @@ router.post("/login", async (req, res, next) => {
 
 
 // | GET         | `/api/auth/verify`      | Verify the user token and return the user data when the user access again    |
-
 router.get("/verify", verifyToken, (req, res) => {
 
   // console.log(req.payload) 
@@ -117,19 +116,6 @@ router.get("/verify", verifyToken, (req, res) => {
 
 })
 
-
-// // comes from class example !!!
-// // private call example using verifyToken
-// router.get("/user/perfil", verifyToken, (req, res) => {
-//   res.json({message: "aqui tienes tu información privada"})
-// })
-
-
-// ///////////// moved to admin.routes.js
-// // ADMIN route example -- all private calls have to use verifyToken
-// router.get("/user/admin", verifyToken, verifyAdmin, (req, res) => {
-//   res.json({ message: "who looks like an admin?" })
-// })
 
 
 module.exports = router
