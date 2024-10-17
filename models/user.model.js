@@ -22,7 +22,13 @@ const userSchema = new Schema(
       required: [true, 'remember to add your username']
     },
     socialLinks: [String],
-    savedRecs: [{ type: Schema.Types.ObjectId, ref: "Recommendation" }]
+    savedRecs: [{ type: Schema.Types.ObjectId, ref: "Recommendation" }],
+    role: {
+      type: String,
+      // enum: ["user", "admin", "superadmin"],
+      enum: ["user", "admin"]
+      // default: "user"
+    }
   },
   {
     timestamps: true // automatically adds createdAt + updatedAt timestamps
@@ -32,26 +38,3 @@ const userSchema = new Schema(
 const User = model("User", userSchema)
 
 module.exports = User
-
-
-// // BEFORE...
-// const userSchema = new mongoose.Schema(
-//   {
-//     username: { 
-//       type: String, 
-//       required: true, 
-//       unique: true 
-//     },
-//     email: { 
-//       type: String, 
-//       required: true, 
-//       unique: true 
-//     },
-//     socialLinks: [String],
-//     savedRecs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recommendation' }]
-//   }
-// )
-
-// const User = mongoose.model('User', userSchema)
-
-// module.exports = User

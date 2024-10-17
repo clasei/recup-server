@@ -22,20 +22,19 @@ const router = require("express").Router()
 // router.use(verifyToken)
 // // !!!!!!!!!!!!!!!!!!!!! JUST DO THIS LATER
 
-
+const adminRoutes = require("./admin.routes")
+router.use("/admin", adminRoutes)
 
 const authRoutes = require("./auth.routes")
-// const authRouter = require("./auth.routes") // why is this different?
-const contentRoutes = require("./content.routes")
-const recommendationRoutes = require("./recommendation.routes")
-const userRoutes = require("./user.routes")
-
-
-// // plural -> convention !!!
 router.use("/auth", authRoutes)
-// router.use("/auth", authRouter)
+
+const contentRoutes = require("./content.routes")
 router.use("/contents", contentRoutes)
+
+const recommendationRoutes = require("./recommendation.routes")
 router.use("/recommendations", recommendationRoutes)
+
+const userRoutes = require("./user.routes")
 router.use("/users", userRoutes)
 
 

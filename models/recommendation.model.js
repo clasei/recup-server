@@ -1,8 +1,8 @@
 const mongoose = require("mongoose")
 
 const recommendationSchema = new mongoose.Schema({
-  contentId: { type: mongoose.Schema.Types.ObjectId, ref: "Content", required: true },
-  // creatorId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  content: { type: mongoose.Schema.Types.ObjectId, ref: "Content", required: true },
+  creator: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true  },
   tagline: { type: String, required: true },
   recText: { type: String, required: true },
   // totalSaved // to be added -- virtual ?
