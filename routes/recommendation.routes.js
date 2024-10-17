@@ -3,13 +3,17 @@ const Recommendation = require("../models/recommendation.model")
 // content.model added to update totalRecommendations
 const Content = require("../models/content.model")
 
+const { verifyToken } = require("../middlewares/auth.middlewares")
+
 
 // | POST        | `/api/recommendations`                   | Create a new recommendation                     |
-router.post("/", async (req, res, next) => {
+router.post("/", verifyToken, async (req, res, next) => {
   try {
     const newRec = await Recommendation.create({
       content: req.body.content,
-      creator: req.body.creator,
+      // use token to add creator
+      creator: req.payload._id,
+      // creator: req.body.creator,
       tagline: req.body.tagline,
       recText: req.body.recText
     })

@@ -1,23 +1,45 @@
 const router = require("express").Router()
 const Content = require("../models/content.model")
 
+const { verifyToken } = require("../middlewares/auth.middlewares")
+
+
+// | POST        | `/api/recommendations/check-content`      | Check if content exists by category and title  |
+router.post("/check-content", async (req, res, next) => {
+  try {
+
+    const { category, title } = req.body
+
+    const existingContent = await Content.findOne({ category, title });
+
+    if (existingContent) {
+      return res.status(200).json({ message: "this content already exist" }); 
+    }
+    // if content does not exist the rest of the details should be reqeusted...
+    return res.status(200).json({ message: "let's create some new content" });
+
+  } catch (error) {
+    next(error);
+  }
+})
+
 
 // | POST        | `/api/contents`            | Create new content (e.g., books, movies) |
-router.post("/", async (req, res, next) => {
+router.post("/", verifyToken, async (req, res, next) => {
   try {
     const newContent = await Content.create({
       category: req.body.category,
       title: req.body.title,
       author: req.body.author,
       keywords: req.body.keywords,
-      mediaUrl: req.body.mediaUrl
+      mediaUrl: req.body.mediaUrl,
+      // userId comes from token + validation at the same time, yay
+      firstRecommendationCreator: req.payload._id 
     })
     res.status(201).json(newContent)
     // console.log(newContent)
   } catch (error) {
     next(error)
-    // // check this syntax after error-handling setup !!!
-    // next(new Error(`error creating new content: ${error}`))
   }
 })
 
