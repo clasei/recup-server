@@ -5,6 +5,7 @@ const recommendationSchema = new mongoose.Schema({
   creator: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true  },
   tagline: { type: String, required: true },
   recText: { type: String, required: true },
+  totalSaved: { type: Number, default: 0 }
   // totalSaved // to be added -- virtual ?
 })
 
