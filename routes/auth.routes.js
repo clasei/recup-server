@@ -124,10 +124,12 @@ router.get("/verify", verifyToken, (req, res) => {
 //   res.json({message: "aqui tienes tu información privada"})
 // })
 
-// ADMIN route example -- all private calls have to use verifyToken
-router.get("/user/admin", verifyToken, verifyAdmin, (req, res) => {
-  res.json({ message: "who looks like an admin?" })
-})
+
+// ///////////// moved to admin.routes.js
+// // ADMIN route example -- all private calls have to use verifyToken
+// router.get("/user/admin", verifyToken, verifyAdmin, (req, res) => {
+//   res.json({ message: "who looks like an admin?" })
+// })
 
 
 module.exports = router

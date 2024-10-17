@@ -22,8 +22,8 @@ const router = require("express").Router()
 // router.use(verifyToken)
 // // !!!!!!!!!!!!!!!!!!!!! JUST DO THIS LATER
 
-// const adminRoutes = require("./admin.routes")
-// router.use("/admin", adminRoutes)
+const adminRoutes = require("./admin.routes")
+router.use("/admin", adminRoutes)
 
 const authRoutes = require("./auth.routes")
 router.use("/auth", authRoutes)
