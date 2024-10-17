@@ -1,5 +1,7 @@
 const router = require("express").Router()
 const Recommendation = require("../models/recommendation.model")
+// content.model added to update totalRecommendations
+const Content = require("../models/content.model")
 
 
 // | POST        | `/api/recommendations`                   | Create a new recommendation                     |
@@ -11,6 +13,12 @@ router.post("/", async (req, res, next) => {
       tagline: req.body.tagline,
       recText: req.body.recText
     })
+
+    // increment +1 totalRecommendations in content.model
+    await Content.findByIdAndUpdate(req.body.content, {
+      $inc: { totalRecommendations: 1 }
+    })
+
     res.status(201).json(newRec)
     // console.log(newRec)
   } catch (error) {
@@ -128,6 +136,12 @@ router.put("/:recommendationId", async (req, res, next) => {
 router.delete("/:recommendationId", async (req, res, next) => {
   try {
     await Recommendation.findByIdAndDelete(req.params.recommendationId)
+
+    // decrement totalRecommendations -1 in content.model
+    await Content.findByIdAndUpdate(recommendation.content, {
+      $inc: { totalRecommendations: -1 }
+    })
+
     res.sendStatus(204)
   } catch (error) {
     next(error)
