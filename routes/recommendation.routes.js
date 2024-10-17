@@ -103,6 +103,7 @@ router.get("/:recommendationId", async (req, res, next) => {
 })
 
 
+// --------------------------- this could be filtered in the front and the route deleted...
 // | GET         | `/api/recommendations/content/:contentId`        | Read all recommendations for a specific content |
 router.get("/content/:contentId", async (req, res, next) => {
   try {

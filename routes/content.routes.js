@@ -20,7 +20,7 @@ const Content = require("../models/content.model")
 //       return res.status(200).json({ message: "this content already exist" })
 //     }
 //     // if content does not exist the rest of the details should be reqeusted...
-//     return res.status(200).json({ message: "let's create some new content" })
+//     return res.status(400).json({ message: "let's create some new content" })
 
 //   } catch (error) {
 //     next(error);

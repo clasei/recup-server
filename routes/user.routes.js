@@ -49,6 +49,7 @@ router.get("/:userId", verifyToken, async (req, res, next) => {
 // })
 
 
+// --------------------------- this could be managed using savedRecs and the route deleted...
 // | GET | `/api/users/:userId/saved-recommendations` | Get all saved recommendations of a user (private) |
 router.get("/:userId/saved-recommendations", verifyToken, async (req, res, next) => {
   try {
