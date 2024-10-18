@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken")
 const { verifyToken, verifyAdmin } = require("../middlewares/auth.middlewares")
 
 
-// | POST        | `/api/auth/signup`      | Register a new user and encrypt the password, create user in db     |
+// | POST        | `/api/auth/signup`      | Register + LOGIN !! a new user and encrypt the password, create user in db     |
 router.post("/signup", async (req, res, next) => {
 
   // console.log(req.body)
@@ -52,7 +52,8 @@ router.post("/signup", async (req, res, next) => {
     const salt = await bcrypt.genSalt(12)
     const hashPassword = await bcrypt.hash(password, salt)
     
-    await User.create({
+    // variable created for newUser + store token
+    const newUser = await User.create({
       email,
       password: hashPassword,
       username,
@@ -60,7 +61,16 @@ router.post("/signup", async (req, res, next) => {
       // role
     })
 
-    res.sendStatus(201)
+    // create new token when user signup to login directly haha
+    const authToken = jwt.sign(
+      { _id: newUser._id, username: newUser.username, role: newUser.role },
+      process.env.TOKEN_SECRET, {
+        algorithm: "HS256",
+        expiresIn: "7d" // 7 days; it could be different
+      })
+
+    // res.sendStatus(201)
+    res.status(201).json({ authToken }) // send token to front-end
   } catch (error) {
     next(error)
   }
