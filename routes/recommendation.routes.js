@@ -11,6 +11,17 @@ const { verifyToken } = require("../middlewares/auth.middlewares")
 router.post("/content/:contentId", verifyToken, async (req, res, next) => {
   try {
 
+    // check if the user already wrote a recommendation for this content... TEST TEST TEST THIS
+    const existingRecommendation = await Recommendation.findOne({
+      content: req.params.contentId,
+      creator: req.payload._id
+    });
+
+    if (existingRecommendation) {
+      return res.status(400).json({ message: "you already shared your feeling about this, do you want to update it?" });
+    }
+
+
     const newRec = await Recommendation.create({
       content: req.params.contentId, // use front-end route !!!
       // use token to add creator
