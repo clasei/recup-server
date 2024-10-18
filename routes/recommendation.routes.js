@@ -15,6 +15,7 @@ router.post("/content/:contentId", verifyToken, async (req, res, next) => {
       content: req.params.contentId, // use front-end route !!!
       // use token to add creator
       creator: req.payload._id,
+      recTitle: req.body.recTitle,
       tagline: req.body.tagline,
       recText: req.body.recText
     })
@@ -62,6 +63,7 @@ router.post("/new-content", verifyToken, async (req, res, next) => {
     const newRec = await Recommendation.create({
       content: newContent._id,
       creator: req.payload._id,
+      recTitle: req.body.recTitle,
       tagline: req.body.tagline,
       recText: req.body.recText
     })
@@ -140,6 +142,7 @@ router.put("/:recommendationId", verifyToken, async (req, res, next) => {
       {
         // content: req.body.content,
         // creator: req.body.creator, // no needed here
+        recTitle: req.body.recTitle,
         tagline: req.body.tagline,
         recText: req.body.recText
         // add more fields if you change the model !!!
