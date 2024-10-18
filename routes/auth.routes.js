@@ -16,7 +16,6 @@ router.post("/signup", async (req, res, next) => {
   const { email, password, username, role } = req.body
 
   // back-end validations start here
-
   if (!email || !password || !username) {
     res.status(400).json({message: "Todos los campos son requeridos"})
     return // this stops the function == guard clause
@@ -28,13 +27,25 @@ router.post("/signup", async (req, res, next) => {
     return
   }
 
-  // email structure verification pending
+  // username validation: letters, numbers, underscores, and hyphens (3-15)
+  const regexUsername = /^[a-zA-Z0-9_-]{3,15}$/
+  if (!regexUsername.test(username)) {
+    res.status(400).json({ message: "your username can only include, letters, numbers, _ or - ; 15 max." });
+    return;
+  }
   
   try {
 
     const foundUser = await User.findOne({ email: email })
     if (foundUser) {
       res.status(400).json({message: "this email already exists, and it's probably you"})
+      return
+    }
+
+    // check username doesnt exist
+    const foundUserByUsername = await User.findOne({ username })
+    if (foundUserByUsername) {
+      res.status(400).json({ message: "username taken, time to be creative" })
       return
     }
 

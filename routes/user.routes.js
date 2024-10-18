@@ -25,9 +25,9 @@ const { verifyToken } = require("../middlewares/auth.middlewares")
 
 
 // | GET         | `/api/users/:userId`    | Read a specific user's profile + RECS -- users only |
-router.get("/:userId", verifyToken, async (req, res, next) => {
+router.get("/:username", verifyToken, async (req, res, next) => { // :userId changed to :username
   try {
-    const specificUser = await User.findById(req.params.userId)
+    const specificUser = await User.findById(req.params.username) // :userId changed to :username
       .populate("createdRecs")
     res.status(200).json(specificUser)
   } catch (error) {
