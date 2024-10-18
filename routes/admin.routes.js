@@ -123,7 +123,7 @@ router.delete("/content/:contentId/delete", verifyToken, verifyAdmin, async (req
 // | GET         | `/api/admin/recommendation/all-recommendations`            | Fetch all recommendations                       |
 router.get("/recommendation/all-recommendations", verifyToken, verifyAdmin, async (req, res, next) => {
   try {
-    const allRecs = await Recommendation.find({}, '_id tagline recText creator')
+    const allRecs = await Recommendation.find({}, '_id recTitle tagline recText creator')
     res.status(200).json(allRecs)
   } catch (error) {
     next(error)

@@ -24,11 +24,17 @@ const { verifyToken } = require("../middlewares/auth.middlewares")
 // })
 
 
-// | GET         | `/api/users/:userId`    | Read a specific user's profile + RECS -- users only |
-router.get("/:userId", verifyToken, async (req, res, next) => {
+// | GET         | `/api/users/:username`    | Read a specific user's profile + RECS -- users only |
+router.get("/:username", verifyToken, async (req, res, next) => { // :userId changed to :username
   try {
-    const specificUser = await User.findById(req.params.userId)
+    const specificUser = await User.findOne({ username: req.params.username }) // :userId changed to :username
       .populate("createdRecs")
+
+    // // check if the user exists...  
+    // if (!specificUser) {
+    //   return res.status(404).json({ message: "User not found" });
+    // }
+
     res.status(200).json(specificUser)
   } catch (error) {
     next(error)

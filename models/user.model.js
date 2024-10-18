@@ -16,6 +16,7 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: [true, 'hey, your email is required'],
+      trim: true,
       unique: true,
       lowercase: true,
       trim: true
@@ -28,6 +29,8 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'remember to add your username']
     },
+    name: { type: String },
+    lastName: { type: String },
     // socialLinks: [String], // check if more social is needed... probably not
     socialLink: { type: String, trim: true },
     savedRecs: [{ type: Schema.Types.ObjectId, ref: "Recommendation" }],
