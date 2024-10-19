@@ -8,18 +8,9 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_KEY,
   api_secret: process.env.CLOUDINARY_SECRET,
-  // cloud_name: 'dl0fe2svg',
-  // api_key: '835198893865874',
-  // api_secret: 'tsqL9PfpkgiyXWRLaP4cW9AytUE',
 });
 
-console.log('Cloudinary config applied');
-
-// console.log("Environment Config:", {
-//   cloud_name: process.env.CLOUDINARY_NAME,
-//   api_key: process.env.CLOUDINARY_KEY,
-//   api_secret: process.env.CLOUDINARY_SECRET,
-// });
+// console.log('Cloudinary config applied');
 
 
 const storage = new CloudinaryStorage({
