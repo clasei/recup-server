@@ -11,6 +11,17 @@ const { verifyToken } = require("../middlewares/auth.middlewares")
 router.post("/content/:contentId", verifyToken, async (req, res, next) => {
   try {
 
+    // check if the user already wrote a recommendation for this content... TEST TEST TEST THIS
+    const existingRecommendation = await Recommendation.findOne({
+      content: req.params.contentId,
+      creator: req.payload._id
+    });
+
+    if (existingRecommendation) {
+      return res.status(400).json({ message: "you already shared your feeling about this, do you want to update it?" });
+    }
+
+
     const newRec = await Recommendation.create({
       content: req.params.contentId, // use front-end route !!!
       // use token to add creator
@@ -41,13 +52,13 @@ router.post("/content/:contentId", verifyToken, async (req, res, next) => {
 router.post("/new-content", verifyToken, async (req, res, next) => {
   try {
 
-    // // check if content exists... integrate with the front in the future !!!
-    // const { category, title } = req.body;
-    // const existingContent = await Content.findOne({ category, title });
+    // check if content exists... integrate with the front in the future !!!
+    const { category, title } = req.body;
+    const existingContent = await Content.findOne({ category, title });
 
-    // if (existingContent) {
-    //   return res.status(400).json({ message: "this content already exists" });
-    // }
+    if (existingContent) {
+      return res.status(400).json({ message: "this content already exists" });
+    }
 
     const newContent = await Content.create({
       // category,
