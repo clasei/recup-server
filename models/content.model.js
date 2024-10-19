@@ -18,11 +18,11 @@ const contentSchema = new Schema({
   author: [{ type: String, required: true  }],
   keywords: [{ type: String }],
   mediaUrl: String,
-  // here comes cloudinary...
+  // // here comes cloudinary... just in case
   // media: {
-  //   url: { type: String },          // Cloudinary URL
-  //   publicId: { type: String },     // Public ID from Cloudinary
-  //   format: { type: String }        // Optionally store file format
+  //   url: { type: String }, // cloudinary URL
+  //   publicId: { type: String }, // cloudinary publicId
+  //   format: { type: String } // format could be useful
   // },
   totalRecommendations: { type: Number, default: 0 },
   firstRecommendationCreator:  { type: Schema.Types.ObjectId, ref: "User", required: true }
