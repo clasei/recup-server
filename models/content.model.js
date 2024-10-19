@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const contentSchema = new mongoose.Schema({
+const contentSchema = new Schema({
   category: {
     type: String,
     enum: [
@@ -8,28 +8,29 @@ const contentSchema = new mongoose.Schema({
       "comic",
       "film",
       "podcast",
-      // "series / tv show", // just simplify
       "series",
       "song",
       "videogame"
-      // abc order before; below "live" events
-      // "gig / concert",
-      // "theater",
-      // "exhibition",
     ],
     required: true,
   },
   title: { type: String, required: true },
-  author: { type: String, required: true },
-  keywords: [String],
+  author: [{ type: String, required: true  }],
+  keywords: [{ type: String }],
   mediaUrl: String,
+  // here comes cloudinary...
+  // media: {
+  //   url: { type: String },          // Cloudinary URL
+  //   publicId: { type: String },     // Public ID from Cloudinary
+  //   format: { type: String }        // Optionally store file format
+  // },
   totalRecommendations: { type: Number, default: 0 },
-  firstRecommendationCreator:  { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
+  firstRecommendationCreator:  { type: Schema.Types.ObjectId, ref: "User", required: true }
 },
 {
   timestamps: true
 })
 
-const Content = mongoose.model("Content", contentSchema)
+const Content = model("Content", contentSchema)
 
 module.exports = Content
