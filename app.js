@@ -1,4 +1,6 @@
 require("dotenv").config()
+const cloudinary = require('cloudinary').v2
+
 require("./db") // waiting for database
 
 const express = require("express")

@@ -16,6 +16,8 @@ router.use("/recommendations", recommendationRoutes)
 const userRoutes = require("./user.routes")
 router.use("/users", userRoutes)
 
+const uploadRoutes = require("./upload.routes")
+router.use("/upload", uploadRoutes)
 
 // // TEST -- all good
 // router.get("/", (req, res, next) => {

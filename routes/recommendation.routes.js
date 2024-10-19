@@ -53,7 +53,7 @@ router.post("/new-content", verifyToken, async (req, res, next) => {
   try {
 
     // check if content exists... integrate with the front in the future !!!
-    const { category, title } = req.body;
+    const { category, title, mediaUrl } = req.body;
     const existingContent = await Content.findOne({ category, title });
 
     if (existingContent) {
@@ -61,13 +61,11 @@ router.post("/new-content", verifyToken, async (req, res, next) => {
     }
 
     const newContent = await Content.create({
-      // category,
-      // title,
       category: req.body.category,
       title: req.body.title,
       author: req.body.author,
       keywords: req.body.keywords,
-      mediaUrl: req.body.mediaUrl,
+      mediaUrl: mediaUrl,
       firstRecommendationCreator: req.payload._id
     })
     
