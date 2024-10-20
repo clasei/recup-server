@@ -77,6 +77,11 @@ router.post("/new-content", verifyToken, async (req, res, next) => {
       recText: req.body.recText
     })
 
+    // increment +1 totalRecommendations in content
+    await Content.findByIdAndUpdate(newContent._id, {
+      $inc: { totalRecommendations: 1 }
+    })
+
     // add the new rec to the createdRecs user array property
     await User.findByIdAndUpdate(req.payload._id, {
       $push: { createdRecs: newRec._id }
