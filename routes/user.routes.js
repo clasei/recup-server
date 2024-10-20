@@ -57,18 +57,33 @@ router.get("/:username", verifyToken, async (req, res, next) => { // :userId cha
 
 // --------------------------- this could be managed using savedRecs and the route deleted...
 // | GET | `/api/users/:userId/saved-recommendations` | Get all saved recommendations of a user (private) |
+// router.get("/:userId/saved-recommendations", verifyToken, async (req, res, next) => {
+//   try {
+//     if (req.payload._id !== req.params.userId) {
+//       return res.status(403).json({ message: "You cannot access someone else's saved recommendations." });
+//     }
+
+//     const user = await User.findById(req.params.userId).populate("savedRecs");
+//     res.status(200).json(user.savedRecs)
+//   } catch (error) {
+//     next(error)
+//   }
+// })
+
+// change this to manage an array in the client side
 router.get("/:userId/saved-recommendations", verifyToken, async (req, res, next) => {
   try {
     if (req.payload._id !== req.params.userId) {
       return res.status(403).json({ message: "You cannot access someone else's saved recommendations." });
     }
 
-    const user = await User.findById(req.params.userId).populate("savedRecs");
-    res.status(200).json(user.savedRecs)
+    const user = await User.findById(req.params.userId).select('savedRecs'); // instead of .populate
+    res.status(200).json({ savedRecs: user.savedRecs });
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
+
 
 
 
