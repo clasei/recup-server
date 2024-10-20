@@ -24,23 +24,39 @@ const { verifyToken } = require("../middlewares/auth.middlewares")
 // })
 
 
-// | GET         | `/api/users/:username`    | Read a specific user's profile + RECS -- users only |
-router.get("/:username", verifyToken, async (req, res, next) => { // :userId changed to :username
+// // READ THE USER ID USING THE TOKEN !!!! THIS IS NOT GOOD
+// // | GET         | `/api/users/:username`    | Read a specific user's profile + RECS -- users only |
+// router.get("/:username", verifyToken, async (req, res, next) => { // :userId changed to :username
+//   try {
+//     const specificUser = await User.findOne({ username: req.params.username }) // :userId changed to :username
+//       .populate("createdRecs")
+
+//     // // check if the user exists...  
+//     // if (!specificUser) {
+//     //   return res.status(404).json({ message: "User not found" });
+//     // }
+
+//     res.status(200).json(specificUser)
+//   } catch (error) {
+//     next(error)
+//   }
+// })
+
+// | GET | `/api/users/profile` | Get the logged-in user's profile and created recups |
+router.get("/profile", verifyToken, async (req, res, next) => {
   try {
-    const specificUser = await User.findOne({ username: req.params.username }) // :userId changed to :username
-      .populate("createdRecs")
+    // Use the ID from the token payload (req.payload._id) instead of relying on URL params
+    const specificUser = await User.findById(req.payload._id).populate("createdRecs");
 
-    // // check if the user exists...  
-    // if (!specificUser) {
-    //   return res.status(404).json({ message: "User not found" });
-    // }
+    if (!specificUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    res.status(200).json(specificUser)
+    res.status(200).json(specificUser);
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
-
+});
 
 // // this route could be unnecessary now that we have createdRecs property
 // // | GET | `/api/users/:userId/created-recommendations` | Get all recommendations created by a user -- users only |
