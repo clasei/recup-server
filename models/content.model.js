@@ -17,7 +17,7 @@ const contentSchema = new Schema({
   title: { type: String, required: true },
   author: [{ type: String, required: true  }],
   keywords: [{ type: String }],
-  mediaUrl: String,
+  mediaUrl: { type: String, required: true }, // content needs media xd
   // // here comes cloudinary... just in case
   // media: {
   //   url: { type: String }, // cloudinary URL
