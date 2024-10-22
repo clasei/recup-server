@@ -20,9 +20,9 @@ const uploadRoutes = require("./upload.routes")
 router.use("/upload", uploadRoutes)
 
 // // TEST -- all good
-// router.get("/", (req, res, next) => {
-//   res.json(`hey there this is still rec-up-back-end`)
-// })
+router.get("/", (req, res, next) => {
+  res.json(`hey there this is still rec-up-back-end`)
+})
 
 
 module.exports = router
