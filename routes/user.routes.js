@@ -24,23 +24,22 @@ const { verifyToken } = require("../middlewares/auth.middlewares")
 // })
 
 
-// // READ THE USER ID USING THE TOKEN !!!! THIS IS NOT GOOD
-// // | GET         | `/api/users/:username`    | Read a specific user's profile + RECS -- users only |
-// router.get("/:username", verifyToken, async (req, res, next) => { // :userId changed to :username
-//   try {
-//     const specificUser = await User.findOne({ username: req.params.username }) // :userId changed to :username
-//       .populate("createdRecs")
+// | GET         | `/api/users/:username`    | Read a specific user's profile + RECS -- users only |
+router.get("/:username", verifyToken, async (req, res, next) => { // :userId changed to :username
+  try {
+    const specificUser = await User.findOne({ username: req.params.username }) // :userId changed to :username
+      .populate("createdRecs")
 
-//     // // check if the user exists...  
-//     // if (!specificUser) {
-//     //   return res.status(404).json({ message: "User not found" });
-//     // }
+    // // check if the user exists...  
+    // if (!specificUser) {
+    //   return res.status(404).json({ message: "User not found" });
+    // }
 
-//     res.status(200).json(specificUser)
-//   } catch (error) {
-//     next(error)
-//   }
-// })
+    res.status(200).json(specificUser)
+  } catch (error) {
+    next(error)
+  }
+})
 
 // | GET | `/api/users/profile` | Get the logged-in user's profile and created recups |
 router.get("/profile", verifyToken, async (req, res, next) => {
@@ -92,9 +91,23 @@ router.get("/:userId/saved-recommendations", verifyToken, async (req, res, next)
     if (req.payload._id !== req.params.userId) {
       return res.status(403).json({ message: "You cannot access someone else's saved recommendations." });
     }
+    const user = await User.findById(req.params.userId)
+      // .select('savedRecs'); // instead of .populate
 
-    const user = await User.findById(req.params.userId).select('savedRecs'); // instead of .populate
-    res.status(200).json({ savedRecs: user.savedRecs });
+      .select("savedRecs username") 
+      .populate("savedRecs") 
+      .populate({
+        path: "savedRecs",
+        populate: { path: "creator" },
+      })
+      
+      // .populate("savedRecs") 
+      // .populate({
+      //   path: 'savedRecs',
+      //   populate: { path: 'creator' } 
+      // })
+
+    res.status(200).json({ savedRecs: user.savedRecs, username: user.username });
   } catch (error) {
     next(error);
   }

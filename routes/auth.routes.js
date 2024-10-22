@@ -85,7 +85,7 @@ router.post("/login", async (req, res, next) => {
 
   // checks all required fields have info
   if (!email || !password) {
-    res.status(400).json({ message: "all fields are require" })
+    res.status(400).json({ message: "all fields are required" })
     return 
   }
 
