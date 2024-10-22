@@ -6,7 +6,7 @@ const contentSchema = new Schema({
     enum: [
       "book",
       "comic",
-      "film",
+      "movie",
       "podcast",
       "series",
       "song",
@@ -17,15 +17,16 @@ const contentSchema = new Schema({
   title: { type: String, required: true },
   author: [{ type: String, required: true  }],
   keywords: [{ type: String }],
-  mediaUrl: String,
-  // // here comes cloudinary... just in case
+  mediaUrl: { type: String, required: true }, // content needs media xd
+  // // just in case
   // media: {
   //   url: { type: String }, // cloudinary URL
   //   publicId: { type: String }, // cloudinary publicId
   //   format: { type: String } // format could be useful
   // },
   totalRecommendations: { type: Number, default: 0 },
-  firstRecommendationCreator:  { type: Schema.Types.ObjectId, ref: "User", required: true }
+  firstRecommendationCreator:  { type: Schema.Types.ObjectId, ref: "User", required: true },
+  firstRecupByContentCreator: { type: Boolean, default: false }
 },
 {
   timestamps: true

@@ -77,6 +77,11 @@ router.post("/new-content", verifyToken, async (req, res, next) => {
       recText: req.body.recText
     })
 
+    // increment +1 totalRecommendations in content
+    await Content.findByIdAndUpdate(newContent._id, {
+      $inc: { totalRecommendations: 1 }
+    })
+
     // add the new rec to the createdRecs user array property
     await User.findByIdAndUpdate(req.payload._id, {
       $push: { createdRecs: newRec._id }
@@ -114,15 +119,13 @@ router.get("/:recommendationId", async (req, res, next) => {
 })
 
 
-// --------------------------- this could be filtered in the front and the route deleted...
 // | GET         | `/api/recommendations/content/:contentId`        | Read all recommendations for a specific content |
 router.get("/content/:contentId", async (req, res, next) => {
   try {
     const allRecsByContent = await Recommendation.find({ content: req.params.contentId })
-      .populate("content") // populates content specific info
-      .populate("creator") // populates rec-creator specific info
       // .populate("content", "title") // populates content specific info
-      // .populate("creator", "username") // populates rec-creator specific info
+      .populate("creator", "username") // populates rec-creator specific info
+
     res.status(200).json(allRecsByContent);
   } catch (error) {
     next(error)

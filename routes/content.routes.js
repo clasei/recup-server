@@ -64,6 +64,7 @@ const Content = require("../models/content.model")
 router.get("/", async (req, res, next) => {
   try {
     const allContents = await Content.find()
+      .populate('firstRecommendationCreator', '_id username') // NEED TO ACCESS THIS DATA IN THE CLIENT !!!
     res.status(200).json(allContents)
   } catch (error) {
     next(error)
@@ -75,6 +76,7 @@ router.get("/", async (req, res, next) => {
 router.get("/:contentId", async (req, res, next) => {
   try {
     const specificContent = await Content.findById(req.params.contentId)
+      // .populate('firstRecommendationCreator', '_id username') // THIS COULD BE NEEDED
     res.status(200).json(specificContent)
   } catch (error) {
     next(error)

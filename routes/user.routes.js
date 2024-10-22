@@ -41,6 +41,21 @@ router.get("/:username", verifyToken, async (req, res, next) => { // :userId cha
   }
 })
 
+// | GET | `/api/users/profile` | Get the logged-in user's profile and created recups |
+router.get("/profile", verifyToken, async (req, res, next) => {
+  try {
+    // Use the ID from the token payload (req.payload._id) instead of relying on URL params
+    const specificUser = await User.findById(req.payload._id).populate("createdRecs");
+
+    if (!specificUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(specificUser);
+  } catch (error) {
+    next(error);
+  }
+});
 
 // // this route could be unnecessary now that we have createdRecs property
 // // | GET | `/api/users/:userId/created-recommendations` | Get all recommendations created by a user -- users only |
@@ -57,18 +72,47 @@ router.get("/:username", verifyToken, async (req, res, next) => { // :userId cha
 
 // --------------------------- this could be managed using savedRecs and the route deleted...
 // | GET | `/api/users/:userId/saved-recommendations` | Get all saved recommendations of a user (private) |
+// router.get("/:userId/saved-recommendations", verifyToken, async (req, res, next) => {
+//   try {
+//     if (req.payload._id !== req.params.userId) {
+//       return res.status(403).json({ message: "You cannot access someone else's saved recommendations." });
+//     }
+
+//     const user = await User.findById(req.params.userId).populate("savedRecs");
+//     res.status(200).json(user.savedRecs)
+//   } catch (error) {
+//     next(error)
+//   }
+// })
+
+// change this to manage an array in the client side
 router.get("/:userId/saved-recommendations", verifyToken, async (req, res, next) => {
   try {
     if (req.payload._id !== req.params.userId) {
       return res.status(403).json({ message: "You cannot access someone else's saved recommendations." });
     }
+    const user = await User.findById(req.params.userId)
+      // .select('savedRecs'); // instead of .populate
 
-    const user = await User.findById(req.params.userId).populate("savedRecs");
-    res.status(200).json(user.savedRecs)
+      .select("savedRecs username") 
+      .populate("savedRecs") 
+      .populate({
+        path: "savedRecs",
+        populate: { path: "creator" },
+      })
+      
+      // .populate("savedRecs") 
+      // .populate({
+      //   path: 'savedRecs',
+      //   populate: { path: 'creator' } 
+      // })
+
+    res.status(200).json({ savedRecs: user.savedRecs, username: user.username });
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
+
 
 
 
