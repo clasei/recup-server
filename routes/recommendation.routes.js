@@ -132,6 +132,18 @@ router.get("/content/:contentId", async (req, res, next) => {
   }
 })
 
+// | GET         | `/api/recommendations/creator/:userId `       | Read all recommendations by a specific creator |
+router.get("/creator/:userId", async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const createdRecs = await Recommendation.find({ creator: userId }).populate("content")
+    res.status(200).json(createdRecs);
+  } catch (error) {
+    next(error);
+  }
+})
+
+
 
 // | PUT         | `/api/recommendations/:recommendationId` | Update a specific recommendation                |
 router.put("/:recommendationId", verifyToken, async (req, res, next) => {
