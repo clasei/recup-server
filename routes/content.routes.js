@@ -83,6 +83,21 @@ router.get("/:contentId", async (req, res, next) => {
   }
 })
 
+// | GET         | `/api/contents/searc` | Search specific content by title
+router.get("/search", async (req, res, next) => {
+  try {
+    const { title } = req.query;
+
+    const contents = await Content.find({ title: new RegExp(`^${title}`, 'i') })
+      .populate('author')
+
+    res.status(200).json(contents);
+  } catch (error) {
+    next(error);
+  }
+})
+
+
 
 
 module.exports = router
