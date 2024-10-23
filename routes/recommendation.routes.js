@@ -143,6 +143,22 @@ router.get("/creator/:userId", async (req, res, next) => {
   }
 })
 
+// // | GET         | `/api/recommendations/creator/:username`       | Username !!! Read all recommendations by a specific creator |
+// router.get("/creator/:username", async (req, res, next) => {
+//   try {
+//     const { username } = req.params;
+//     const user = await User.findOne({ username }).populate("createdRecs");
+
+//     if (!user) {
+//       return res.status(404).json({ message: "user not found" });
+//     }
+//     res.status(200).json(user.createdRecs);
+//   } catch (error) {
+//     next(error); 
+//   }
+// });
+
+
 
 
 // | PUT         | `/api/recommendations/:recommendationId` | Update a specific recommendation                |

@@ -24,6 +24,26 @@ const { verifyToken } = require("../middlewares/auth.middlewares")
 // })
 
 
+// | GET         | `/api/users/user-profile    | Read a specific user's profile + savedRecs + createdRecs, for dashboard and profile !!!!!!!!!!!
+router.get("/user-profile/:userid", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.payload._id)
+      .populate("savedRecs")
+      .populate("createdRecs");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user); // Devuelve toda la información del usuario
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user data" });
+  }
+});
+
+module.exports = router
+
+
 // | GET         | `/api/users/:username`    | Read a specific user's profile + RECS -- users only |
 router.get("/:username", verifyToken, async (req, res, next) => { // :userId changed to :username
   try {
@@ -45,7 +65,9 @@ router.get("/:username", verifyToken, async (req, res, next) => { // :userId cha
 router.get("/profile", verifyToken, async (req, res, next) => {
   try {
     // Use the ID from the token payload (req.payload._id) instead of relying on URL params
-    const specificUser = await User.findById(req.payload._id).populate("createdRecs");
+    const specificUser = await User.findById(req.payload._id)
+    .populate("createdRecs")
+    .populate("savedRecs");
 
     if (!specificUser) {
       return res.status(404).json({ message: "User not found" });
@@ -112,6 +134,32 @@ router.get("/:userId/saved-recommendations", verifyToken, async (req, res, next)
     next(error);
   }
 });
+
+
+router.get("/created/:username", async (req, res, next) => {
+  try {
+    const { username } = req.params;
+
+
+    const user = await User.findOne({ username })
+    // .populate("createdRecs");
+    .populate({
+      path: "createdRecs",
+      populate: { path: "creator", select: "username" }  // Aquí se asegura que venga el username del creador
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+ 
+    res.status(200).json(user.createdRecs);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 
 
 
