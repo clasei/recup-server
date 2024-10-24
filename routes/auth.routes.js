@@ -17,7 +17,7 @@ router.post("/signup", async (req, res, next) => {
 
   // back-end validations start here
   if (!email || !password || !username) {
-    res.status(400).json({message: "Todos los campos son requeridos"})
+    res.status(400).json({message: "all fields are required"})
     return // this stops the function == guard clause
   }
 
