@@ -58,7 +58,7 @@ router.get("/user-profile/:userid", verifyToken, async (req, res) => {
       createdRecs: user.createdRecs
     });
   } catch (error) {
-    res.status(500).json({ message: "Error fetching user data" });
+    next(error)
   }
 });
 

@@ -11,7 +11,7 @@ require("./config")(app) // waiting for config
 const indexRoutes = require("./routes/index.routes")
 app.use("/api", indexRoutes)
 
-// require("./error-handling")(app) // waiting for error-handling
+require("./error-handling")(app) // waiting for error-handling
 
 // // TEST
 // app.get("/", (req, res) => {
