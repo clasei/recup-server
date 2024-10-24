@@ -35,7 +35,16 @@ router.get("/user-profile/:userid", verifyToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json(user); // Devuelve toda la información del usuario
+    // res.status(200).json(user); 
+
+    res.status(200).json({
+      username: user.username,
+      name: user.name,
+      lastName: user.lastName,
+      socialLink: user.socialLink,
+      savedRecs: user.savedRecs,
+      createdRecs: user.createdRecs
+    });
   } catch (error) {
     res.status(500).json({ message: "Error fetching user data" });
   }
@@ -145,7 +154,7 @@ router.get("/created/:username", async (req, res, next) => {
     // .populate("createdRecs");
     .populate({
       path: "createdRecs",
-      populate: { path: "creator", select: "username" }  // Aquí se asegura que venga el username del creador
+      populate: { path: "creator", select: "username" } 
     });
 
     if (!user) {
@@ -153,7 +162,13 @@ router.get("/created/:username", async (req, res, next) => {
     }
 
  
-    res.status(200).json(user.createdRecs);
+    // res.status(200).json(user.createdRecs);
+    res.status(200).json({
+      createdRecs: user.createdRecs,
+      name: user.name,
+      lastName: user.lastName,
+      socialLink: user.socialLink
+    });
   } catch (error) {
     next(error);
   }
@@ -176,8 +191,8 @@ router.put("/:userId", verifyToken, async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(
       req.params.userId,
       {
-        username: req.body.username,
-        email: req.body.email,
+        name: req.body.name,
+        lastName: req.body.lastName,
         socialLink: req.body.socialLink
         // savedRecs: [] // removed cause it won't be updated here - is this ok ?
         // add more fields if you change the model !!!

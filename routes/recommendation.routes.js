@@ -18,9 +18,8 @@ router.post("/content/:contentId", verifyToken, async (req, res, next) => {
     });
 
     if (existingRecommendation) {
-      return res.status(400).json({ message: "you already shared your feeling about this, do you want to update it?" });
+      return res.status(400).json({ message: "you already shared your feeling about this, do you want to update it? go to your dashboard" });
     }
-
 
     const newRec = await Recommendation.create({
       content: req.params.contentId, // use front-end route !!!
