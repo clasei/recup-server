@@ -28,8 +28,20 @@ const { verifyToken } = require("../middlewares/auth.middlewares")
 router.get("/user-profile/:userid", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.payload._id)
+
+      // -------------------------- CHECK THIS !!!
+
       .populate("savedRecs")
-      .populate("createdRecs");
+      // .populate("createdRecs"); 
+
+      .populate({
+        path: "createdRecs",
+        populate: {
+          path: "content",    
+        },
+      })
+
+      // -------------------------- CHECK THIS !!!
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
